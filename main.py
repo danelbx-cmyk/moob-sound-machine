@@ -19,30 +19,32 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Moob Sound Machine 🐮🎵")
         self.setMinimumSize(800, 500)
 
-        # Initialize pygame-ce mixer
+        # Initialize audio
         pygame.mixer.init()
+        self.sound = pygame.mixer.Sound("sounds/YoSoyMAMA.wav")
 
-        # Load our first sound
-        self.sound = pygame.mixer.Sound("moob-sound-machine/sounds/YoSoyMAMA.wav")
-
-        # UI
+        # Central widget
         central = QWidget()
         self.setCentralWidget(central)
 
         layout = QGridLayout()
         central.setLayout(layout)
 
-        title = QLabel("🐮 First Moo Test")
+        # Title
+        title = QLabel("🐮 The Herd")
         title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title, 0, 0, 1, 3)
 
-        button = QPushButton("🔊 Play Moo")
-        button.clicked.connect(self.play_sound)
-
-        layout.addWidget(title, 0, 0)
-        layout.addWidget(button, 1, 0)
+        # 3x3 button grid
+        for row in range(3):
+            for col in range(3):
+                button = QPushButton(f"Moo {row * 3 + col + 1} 🐮")
+                button.setMinimumHeight(80)
+                button.clicked.connect(self.play_sound)
+                layout.addWidget(button, row + 1, col)
 
     def play_sound(self):
-        print("🐮 Moo button pressed!")
+        print("🐮 Moo!")
         self.sound.play()
 
 
