@@ -21,7 +21,17 @@ class MainWindow(QMainWindow):
 
         # Initialize audio
         pygame.mixer.init()
-        self.sound = pygame.mixer.Sound("sounds/YoSoyMAMA.wav")
+        sound_data = [
+            ("🐮 YSMAMA", "YoSoyMAMA.wav"),
+            ("🐈‍⬛ Lamoroxitah", "lamoroxita.wav"),
+            ("👮 Hot Damn!", "hot_damn.wav")
+        ]
+
+        self.sounds = {}
+
+        for button_name, filename in sound_data:
+            self.sounds[button_name] = pygame.mixer.Sound(f"sounds/{filename}")
+            
 
         # Central widget
         central = QWidget()
@@ -34,18 +44,37 @@ class MainWindow(QMainWindow):
         title = QLabel("🐮 The Herd")
         title.setAlignment(Qt.AlignCenter)
         layout.addWidget(title, 0, 0, 1, 3)
+        self.sounds = {}
+
+        for button_name, filename in sound_data:
+            self.sounds[button_name] = pygame.mixer.Sound(f"sounds/{filename}")
 
         # 3x3 button grid
-        for row in range(3):
-            for col in range(3):
-                button = QPushButton(f"Moo {row * 3 + col + 1} 🐮")
-                button.setMinimumHeight(80)
-                button.clicked.connect(self.play_sound)
-                layout.addWidget(button, row + 1, col)
+        for index, (button_name, filename) in enumerate(sound_data):
+
+            row = index // 3 + 1
+            col = index % 3
+
+            button = QPushButton(button_name)
+            button.sound_name = button_name  # Store the sound name in the button
+
+            button.setMinimumHeight(80)
+            button.clicked.connect(self.play_sound)
+
+            layout.addWidget(button, row, col)
+
+
 
     def play_sound(self):
-        print("🐮 Moo!")
-        self.sound.play()
+        button = self.sender()
+        print(button.sound_name)
+        sound = self.sounds.get(button.sound_name)
+
+        if sound:
+            print(f"Playing: {button.sound_name}")
+            sound.play()
+
+        
 
 
 app = QApplication(sys.argv)
